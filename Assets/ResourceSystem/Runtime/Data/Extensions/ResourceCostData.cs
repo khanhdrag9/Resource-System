@@ -1,14 +1,9 @@
 namespace ResourceSystem
 {
-    public class ResourceCostData
+    public class ResourceCostData : ResourceUsageData
     {
-        public readonly ResourceData ResourceData;
-        public int Amount;
-
-        public ResourceCostData(ResourceData resourceData, int amount)
+        public ResourceCostData(ResourceData resourceData, int amount) : base(resourceData, amount)
         {
-            ResourceData = resourceData;
-            Amount = amount;
         }
     }
 }

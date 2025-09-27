@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ResourceSystem
 {
-    public sealed class OwnedItem : IEquatable<OwnedItem>
+    public sealed class OwnedItem : EquatableData
     {
         public Guid UniqueId { get; private set; }
         public ResourceData Data { get; private set; }
@@ -20,32 +20,14 @@ namespace ResourceSystem
             Data = data;
         }
 
-        public override bool Equals(object obj) => Equals(obj as OwnedItem);
-        public bool Equals(OwnedItem other)
+        protected override bool EqualInternal(object other)
         {
-            return ReferenceEquals(this, other) || UniqueId == other.UniqueId;
+            return other is OwnedItem ownedItem && Data.Id == ownedItem.Data.Id;
         }
 
-        public static bool operator ==(OwnedItem a, OwnedItem b)
+        protected override int GetHashCodeInternal()
         {
-            if (ReferenceEquals(a, b))
-                return true;
-            if (ReferenceEquals(a, null))
-                return false;
-            if (ReferenceEquals(b, null))
-                return false;
-
-            return a.Equals(b);
-        }
-
-        public static bool operator !=(OwnedItem a, OwnedItem b) => !(a == b);
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return UniqueId.GetHashCode();
-            }
+            return UniqueId.GetHashCode();
         }
     }
 

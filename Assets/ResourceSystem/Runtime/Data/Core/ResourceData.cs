@@ -2,7 +2,7 @@ using System;
 
 namespace ResourceSystem
 {
-    public class ResourceData : IEquatable<ResourceData>
+    public class ResourceData : EquatableData
     {
         public readonly int Id;
 
@@ -11,32 +11,14 @@ namespace ResourceSystem
             Id = id;
         }
 
-        public override bool Equals(object obj) => Equals(obj as ResourceData);
-        public bool Equals(ResourceData other)
+        protected override bool EqualInternal(object other)
         {
-            return ReferenceEquals(this, other) || Id == other.Id;
+            return other is ResourceData resourceData && Id == resourceData.Id;
         }
 
-        public static bool operator ==(ResourceData a, ResourceData b)
+        protected override int GetHashCodeInternal()
         {
-            if (ReferenceEquals(a, b))
-                return true;
-            if (ReferenceEquals(a, null))
-                return false;
-            if (ReferenceEquals(b, null))
-                return false;
-
-            return a.Equals(b);
-        }
-
-        public static bool operator !=(ResourceData a, ResourceData b) => !(a == b);
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return Id.GetHashCode();
-            }
+            return Id.GetHashCode();
         }
     }
 }

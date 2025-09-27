@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ResourceSystem
 {
-    public sealed class OwnedCurrency : IEquatable<OwnedCurrency>
+    public sealed class OwnedCurrency : EquatableData
     {
         public readonly ResourceData Data;
         public int Amount
@@ -15,7 +15,7 @@ namespace ResourceSystem
                 {
                     return;
                 }
-                
+
                 _amount = value;
                 OnAmountChanged?.Invoke(value);
                 OnAmountChangedWithDataNAmountChanged?.Invoke(Data, value);
@@ -40,7 +40,7 @@ namespace ResourceSystem
 
         public void SetNew()
         {
-            if(Data is IHasDefaultAmount hasDefaultAmount)
+            if (Data is IHasDefaultAmount hasDefaultAmount)
             {
                 _amount = hasDefaultAmount.DefaultAmount;
             }
@@ -50,32 +50,14 @@ namespace ResourceSystem
             }
         }
 
-        public override bool Equals(object obj) => Equals(obj as OwnedCurrency);
-        public bool Equals(OwnedCurrency other)
+        protected override bool EqualInternal(object other)
         {
-            return ReferenceEquals(this, other) || Data.Id == other.Data.Id;
+            return other is OwnedCurrency ownedCurrency && Data.Id == ownedCurrency.Data.Id;
         }
-
-        public static bool operator ==(OwnedCurrency a, OwnedCurrency b)
+        
+        protected override int GetHashCodeInternal()
         {
-            if (ReferenceEquals(a, b))
-                return true;
-            if (ReferenceEquals(a, null))
-                return false;
-            if (ReferenceEquals(b, null))
-                return false;
-
-            return a.Equals(b);
-        }
-
-        public static bool operator !=(OwnedCurrency a, OwnedCurrency b) => !(a == b);
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return Data.Id.GetHashCode();
-            }
+            return Data.Id.GetHashCode();
         }
     }
 
