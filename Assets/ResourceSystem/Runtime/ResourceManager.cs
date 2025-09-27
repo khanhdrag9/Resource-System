@@ -8,7 +8,7 @@ namespace ResourceSystem
         public static ResourceManager Instance { get; private set; } = new();
 
         private Dictionary<int, ResourceData> _resourceDataMap = new();
-        private Dictionary<int, OwnedCurrency> _ownedResourceMap = new();
+        private Dictionary<int, OwnedCurrency> _ownedCurrencyMap = new();
         private List<OwnedItem> _ownedItems = new();
 
         public void AddResourceData(ResourceData resourceData)
@@ -37,23 +37,23 @@ namespace ResourceSystem
 
             return resourceData;
         }
-
-        public OwnedCurrency GetOwnedResource(int id)
+        
+        public OwnedCurrency GetOwnedCurrency(int id)
         {
-            if (!_ownedResourceMap.TryGetValue(id, out var ownedResource))
+            if (!_ownedCurrencyMap.TryGetValue(id, out var ownedCurrency))
             {
                 ResourceData resourceData = GetResourceData(id);
-                if(resourceData == null)
+                if (resourceData == null)
                 {
                     Debug.LogWarning($"ResourceSystem: Owned resource with id {id} not found");
                 }
 
-                ownedResource = new OwnedCurrency(resourceData);
-                _ownedResourceMap.Add(id, ownedResource);
-                return ownedResource;
+                ownedCurrency = new OwnedCurrency(resourceData);
+                _ownedCurrencyMap.Add(id, ownedCurrency);
+                return ownedCurrency;
             }
 
-            return ownedResource;
+            return ownedCurrency;
         }
 
         public IReadOnlyList<OwnedItem> GetOwnedItems()
@@ -87,7 +87,7 @@ namespace ResourceSystem
         public void Clear()
         {
             _resourceDataMap.Clear();
-            _ownedResourceMap.Clear();
+            _ownedCurrencyMap.Clear();
             _ownedItems.Clear();
         }
     }

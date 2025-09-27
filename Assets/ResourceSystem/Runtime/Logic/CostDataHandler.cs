@@ -30,7 +30,7 @@ namespace ResourceSystem
             }
             else
             {
-                return ResourceManager.Instance.GetOwnedResource(id).Amount >= amount;
+                return ResourceManager.Instance.GetOwnedCurrency(id).Amount >= amount;
             }
         }
 
@@ -54,7 +54,7 @@ namespace ResourceSystem
             }
             else
             {
-                ResourceManager.Instance.GetOwnedResource(id).Amount -= amount;
+                ResourceManager.Instance.GetOwnedCurrency(id).Amount -= amount;
             }
 
             Costed = true;
@@ -73,8 +73,8 @@ namespace ResourceSystem
             }
             else
             {
-                OwnedCurrency ownedResource = ResourceManager.Instance.GetOwnedResource(_costData.ResourceData.Id);
-                view.UpdateInfo(ownedResource, _costData.Amount);
+                OwnedCurrency ownedResource = ResourceManager.Instance.GetOwnedCurrency(_costData.ResourceData.Id);
+                view.UpdateInfo(ownedResource.Data, _costData.Amount, ownedResource);
             }
         }
     }

@@ -36,7 +36,7 @@ namespace ResourceSystem
             }
             else
             {
-                ResourceManager.Instance.GetOwnedResource(id).Amount += amount;
+                ResourceManager.Instance.GetOwnedCurrency(id).Amount += amount;
             }
 
             Claimed = true;

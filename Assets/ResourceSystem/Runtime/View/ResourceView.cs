@@ -51,7 +51,7 @@ namespace ResourceSystem
 
             if (_includeOwned)
             {
-                OwnedCurrency ownedResource = ResourceManager.GetOwnedResource(_defaultResourceId);
+                OwnedCurrency ownedResource = ResourceManager.GetOwnedCurrency(_defaultResourceId);
                 UpdateInfo(ownedResource.Data, _defaultAmount, ownedResource);
             }
             else
@@ -104,15 +104,23 @@ namespace ResourceSystem
 
         public void UpdateUI()
         {
-            if (_iconImage && Data is IHasIcon hasIcon)
+            if (_iconImage)
             {
-                _iconImage.sprite = hasIcon.Icon;
+                _iconImage.sprite = Data is IHasIcon hasIcon ? hasIcon.Icon : null;
             }
 
-            if (_nameText && Data is IHasName hasName)
+            if (_nameText)
             {
-                _nameText.text = hasName.Name;
-                _descriptionText.text = hasName.Description;
+                if (Data is IHasName hasName)
+                {
+                    _nameText.text = hasName.Name;
+                    _descriptionText.text = hasName.Description;
+                }
+                else
+                {
+                    _nameText.text = "";
+                    _descriptionText.text = "";
+                }
             }
 
             UpdateRarityUI();
@@ -146,12 +154,17 @@ namespace ResourceSystem
                 _amountText.text = string.Format(_amountTextFormat, Amount.ToString());
             }
 
-            if (OwnedResource != null && _ownedAmountText != null)
+            if (_ownedAmountText != null)
             {
-                _ownedAmountText.text = string.Format(_ownedAmountTextFormat, OwnedResource.Amount.ToString());
+                if (OwnedResource == null)
+                {
+                    _ownedAmountText.text = "";
+                }
+                else
+                {
+                    _ownedAmountText.text = string.Format(_ownedAmountTextFormat, OwnedResource.Amount.ToString());
+                }
             }
         }
-
-
     }
 }
