@@ -15,6 +15,8 @@ namespace ResourceSystem
         [Header("UI")]
         [SerializeField] protected Image _rarityImage;
         [SerializeField] protected Image _iconImage;
+        [SerializeField] protected TextMeshProUGUI _nameText;
+        [SerializeField] protected TextMeshProUGUI _descriptionText;
         [SerializeField] protected TextMeshProUGUI _amountText;
         [SerializeField] protected string _amountTextFormat = "x{0}";
         [SerializeField][Tooltip("0: OwnedResource.Amount, 1: Amount")] protected string _amountTextWithOwnedFormat = "{0}/{1}";
@@ -93,6 +95,16 @@ namespace ResourceSystem
                 _iconImage.sprite = GetResourceIcon();
             }
 
+            if (_nameText)
+            {
+                _nameText.text = GetNameText();
+            }
+
+            if (_descriptionText)
+            {
+                _descriptionText.text = GetDescriptionText();
+            }
+
             if (_amountText)
             {
                 _amountText.text = GetAmountText();
@@ -117,6 +129,16 @@ namespace ResourceSystem
         protected virtual Sprite GetResourceIcon()
         {
             return Data is IHasIcon hasIcon ? hasIcon.Icon : null;
+        }
+
+        protected virtual string GetNameText()
+        {
+            return Data is IHasName hasName ? hasName.Name : "";
+        }
+
+        protected virtual string GetDescriptionText()
+        {
+            return Data is IHasName hasName ? hasName.Description : "";
         }
 
         protected virtual string GetAmountText()
