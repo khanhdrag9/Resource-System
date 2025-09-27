@@ -300,7 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6660805808264574abaa9a187467c1a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _claimButton: {fileID: 5927140730503959514}
+  _rewardResourceView: {fileID: 4788984034356113013}
   _onClaimableStateChangedEvent:
     m_PersistentCalls:
       m_Calls:

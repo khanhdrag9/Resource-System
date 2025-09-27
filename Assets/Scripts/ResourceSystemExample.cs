@@ -38,12 +38,7 @@ public class ResourceSystemExample : MonoBehaviour
     [Header("Shop")]
     public List<RewardData> ShopRewards = new List<RewardData>();
     public List<RewardData> ShopCost = new List<RewardData>();
-    public List<ResourceView> ShopRewardViews = new List<ResourceView>();
-    public List<Button> ShopButtons = new List<Button>();
-    
-    private List<ResourceRewardData> _allShopRewardDatas = new List<ResourceRewardData>();
-    private List<ResourceCostData> _allShopCostDatas = new List<ResourceCostData>();
-    private List<CostDataHandler> _allCostDataHandlers = new List<CostDataHandler>();
+
 
     [Header("UI")]
     public Button _addButton;
@@ -76,39 +71,12 @@ public class ResourceSystemExample : MonoBehaviour
             reward.View.GetComponent<ResourceView>().UpdateInfo(ResourceManager.Instance.GetResourceData(reward.Id), reward.Amount);
         }
 
-        for (int i = 0; i < ShopButtons.Count; i++)
+        for (int i = 0; i < ShopRewards.Count; i++)
         {
-            Button button = ShopButtons[i];
-            if (i >= ShopRewards.Count || i >= ShopCost.Count)
-            {
-                button.gameObject.SetActive(false);
-                continue;
-            }
-
             RewardData reward = ShopRewards[i];
             RewardData cost = ShopCost[i];
-            ResourceData rewardResourceData = ResourceManager.Instance.GetResourceData(reward.Id);
-            ResourceData costResourceData = ResourceManager.Instance.GetResourceData(cost.Id);
-
-            ResourceRewardData rewardData = new ResourceRewardData(rewardResourceData, reward.Amount);
-            ResourceCostData costData = new ResourceCostData(costResourceData, cost.Amount);
-
-            CostDataHandler costDataHandler = new CostDataHandler(costData);
-            RewardDataHandler rewardDataHandler = new RewardDataHandler(rewardData);
-
-            _allShopRewardDatas.Add(rewardData);
-            _allShopCostDatas.Add(costData);
-            _allCostDataHandlers.Add(costDataHandler);
-
-            button.onClick.AddListener(() =>
-            {
-                if (costDataHandler.Enough() && !rewardDataHandler.Claimed)
-                {
-                    costDataHandler.Cost();
-                    rewardDataHandler.Claim();
-                    rewardDataHandler.Renew();
-                }
-            });
+            reward.View.GetComponent<ResourceView>().UpdateInfo(ResourceManager.Instance.GetResourceData(reward.Id), reward.Amount);
+            reward.View.transform.Find("Claim button").GetComponent<ResourceView>().UpdateInfo(ResourceManager.Instance.GetResourceData(cost.Id), cost.Amount);
         }
 
         _addButton.onClick.AddListener(OnAddButtonClicked);
@@ -134,30 +102,6 @@ public class ResourceSystemExample : MonoBehaviour
         else
         {
             ResourceNameText.text = "";
-        }
-    }
-
-
-    private void UpdateShopUi()
-    {
-        for (int i = 0; i < ShopRewards.Count; i++)
-        {
-            ShopRewardViews[i].UpdateInfo(
-                ResourceManager.Instance.GetResourceData(ShopRewards[i].Id),
-                ShopRewards[i].Amount
-            );
-
-            _allShopRewardDatas[i].Amount = ShopRewards[i].Amount;
-            _allShopCostDatas[i].Amount = ShopCost[i].Amount;
-
-            Button button = ShopButtons[i];
-            CostDataHandler costDataHandler = _allCostDataHandlers[i];
-            button.image.color = costDataHandler.Enough() ? Color.yellow : Color.gray;
-
-            button.GetComponent<ResourceView>().UpdateInfo(
-                ResourceManager.Instance.GetResourceData(ShopCost[i].Id),
-                ShopCost[i].Amount
-            );
         }
     }
 
@@ -212,7 +156,7 @@ public class ResourceSystemExample : MonoBehaviour
     {
         foreach (var data in Rewards)
         {
-            data.View.GetComponent<ClaimRewardView>().Renew();
+            data.View.GetComponent<ClaimResourceView>().Renew();
         }
     }
 }

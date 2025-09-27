@@ -1,44 +1,41 @@
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace ResourceSystem
 {
-    [RequireComponent(typeof(ResourceView))]
-    public class ClaimRewardView : MonoBehaviour
+    public class ClaimResourceView : MonoBehaviour
     {
-        [SerializeField] private Button _claimButton;
+        [SerializeField] private ResourceView _rewardResourceView;
 
         [Header("Event")]
         [SerializeField] private UnityEvent<bool> _onClaimableStateChangedEvent;
         [SerializeField] private UnityEvent<ResourceRewardData> _onClaimed;
         [SerializeField] private UnityEvent<ResourceRewardData> _onAlreadyClaimed;
 
-        private ResourceView _resourceView;
         private ResourceRewardData _rewardData;
         private RewardDataHandler _rewardDataHandler;
 
+        public ResourceView RewardResourceView
+        {
+            get => _rewardResourceView;
+            set => _rewardResourceView = value;
+        }
+
         private void Start()
         {
-            _resourceView = GetComponent<ResourceView>();
-            _resourceView.OnDataChangedEvent.AddListener(OnDataChanged);
-            OnDataChanged(_resourceView.Data, _resourceView.Amount);
-        }
-
-        private void OnEnable()
-        {
-            if (_claimButton != null)
+            if (_rewardResourceView == null)
             {
-                _claimButton.onClick.AddListener(OnClaimButtonClicked);
+                _rewardResourceView = GetComponent<ResourceView>();
             }
-        }
 
-        private void OnDisable()
-        {
-            if (_claimButton != null)
+            if (_rewardResourceView == null)
             {
-                _claimButton.onClick.RemoveListener(OnClaimButtonClicked);
+                Debug.LogError("ClaimResourceView: RewardResourceView is missing.");
+                return;
             }
+
+            _rewardResourceView.OnDataChangedEvent.AddListener(OnDataChanged);
+            OnDataChanged(_rewardResourceView.Data, _rewardResourceView.Amount);
         }
 
         private void OnDataChanged(ResourceData data, int amount)
@@ -53,11 +50,11 @@ namespace ResourceSystem
             _onClaimableStateChangedEvent.Invoke(!_rewardDataHandler.Claimed);
         }
 
-        private void OnClaimButtonClicked()
+        public void TryClaim()
         {
             if (_rewardDataHandler == null)
             {
-                Debug.LogWarning("ClaimRewardView: RewardDataHandler is null");
+                Debug.LogWarning("ClaimResourceView: RewardDataHandler is null");
                 return;
             }
 
@@ -76,7 +73,7 @@ namespace ResourceSystem
         {
             if (_rewardDataHandler == null)
             {
-                Debug.LogWarning("ClaimRewardView: RewardDataHandler is null");
+                Debug.LogWarning("ClaimResourceView: RewardDataHandler is null");
                 return;
             }
 
@@ -93,7 +90,7 @@ namespace ResourceSystem
         {
             if (_rewardDataHandler == null)
             {
-                Debug.LogWarning("ClaimRewardView: RewardDataHandler is null");
+                Debug.LogWarning("ClaimResourceView: RewardDataHandler is null");
                 return;
             }
 

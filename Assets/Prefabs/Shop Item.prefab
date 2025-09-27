@@ -433,6 +433,7 @@ GameObject:
   - component: {fileID: 3112332645402175647}
   - component: {fileID: 179737051812783591}
   - component: {fileID: 6054342515068672767}
+  - component: {fileID: 7685428468631733395}
   - component: {fileID: 6472019393365247065}
   - component: {fileID: 7404368514103576235}
   - component: {fileID: 3305890233763984143}
@@ -487,18 +488,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultResourceId: 1
   _defaultAmount: 0
-  _includeOwned: 1
   _rarityImage: {fileID: 7404368514103576235}
   _iconImage: {fileID: 4759821385162975827}
   _nameText: {fileID: 0}
   _descriptionText: {fileID: 0}
   _amountText: {fileID: 5013984451571586659}
   _amountTextFormat: x{0}
-  _ownedAmountText: {fileID: 0}
-  _ownedAmountTextFormat: 'Owned: {0}'
   _rarityConfig: {fileID: 0}
   _rarityConfigPath: ResourceSystem/RarityConfig
-  _onOwnedAmountChangedEvent:
+  _onDataChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &7685428468631733395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7160484766505987177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 407b779292b491c448cdddb8b21d5d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rewardResourceView: {fileID: 6054342515068672767}
+  _priceResourceView: {fileID: 6451582727917289214}
+  _onPurchasableStateChangedEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6074926553336056827}
+        m_TargetAssemblyTypeName: TwoStateButton, Assembly-CSharp
+        m_MethodName: SetState
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPurchased:
+    m_PersistentCalls:
+      m_Calls: []
+  _onNotEnoughPurchased:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &6472019393365247065
@@ -737,6 +770,7 @@ GameObject:
   - component: {fileID: 7784023647704627818}
   - component: {fileID: 7304656220648094849}
   - component: {fileID: 6451582727917289214}
+  - component: {fileID: 6074926553336056827}
   m_Layer: 5
   m_Name: Claim button
   m_TagString: Untagged
@@ -862,17 +896,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultResourceId: 0
   _defaultAmount: 0
-  _includeOwned: 0
   _rarityImage: {fileID: 0}
   _iconImage: {fileID: 517574622598891974}
   _nameText: {fileID: 0}
   _descriptionText: {fileID: 0}
   _amountText: {fileID: 6934305534688018304}
   _amountTextFormat: /{0}
-  _ownedAmountText: {fileID: 3953072744953233343}
-  _ownedAmountTextFormat: '{0}'
   _rarityConfig: {fileID: 0}
   _rarityConfigPath: ResourceSystem/RarityConfig
-  _onOwnedAmountChangedEvent:
+  _onDataChangedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6074926553336056827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8204318556093199226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb795e13c923898449fe308f3b3750b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _normalText: Buy
+  _negativeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _negativeText: Not Enough
