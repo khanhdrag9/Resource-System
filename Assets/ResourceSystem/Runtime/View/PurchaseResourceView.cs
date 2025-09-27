@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,8 +12,8 @@ namespace ResourceSystem
 
         [Header("Event")]
         [SerializeField] private UnityEvent<bool> _onPurchasableStateChangedEvent;
-        [SerializeField] private UnityEvent<ResourceRewardData> _onPurchased;
-        [SerializeField] private UnityEvent<ResourceRewardData> _onNotEnoughPurchased;
+        [SerializeField] private UnityEvent<List<ResourceUsageData>> _onPurchased;
+        [SerializeField] private UnityEvent _onNotEnoughPurchased;
 
         [Header("Runtime")]
         [SerializeField] private bool _isPurchasable;
@@ -23,6 +24,7 @@ namespace ResourceSystem
         private CostDataHandler _costDataHandler;
 
         public ResourceManager ResourceManager => ResourceManager.Instance;
+        public IResourceListViewProvider ListViewProvider;
 
         public ResourceView RewardResourceView
         {
@@ -165,14 +167,17 @@ namespace ResourceSystem
 
             if (!_costDataHandler.Enough())
             {
-                _onNotEnoughPurchased.Invoke(_rewardData);
+                _onNotEnoughPurchased.Invoke();
                 return;
             }
 
             _costDataHandler.Cost();
-            _rewardDataHandler.Claim();
-            _rewardDataHandler.Renew();
-            _onPurchased.Invoke(_rewardData);
+
+            List<RewardDataHandler> rewardHandlers = new List<RewardDataHandler> { _rewardDataHandler };
+            List<ResourceUsageData> claimedResources = rewardHandlers.Claim();
+            rewardHandlers.Renew();
+
+            _onPurchased.Invoke(claimedResources);
             _onPurchasableStateChangedEvent.Invoke(_costDataHandler.Enough());
         }
     }

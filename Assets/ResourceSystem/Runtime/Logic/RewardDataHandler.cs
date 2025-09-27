@@ -1,8 +1,11 @@
+using System.Collections.Generic;
+
 namespace ResourceSystem
 {
     public class RewardDataHandler
     {
-        public bool Claimed { get; private set; }
+        public bool AlreadyClaimed { get; private set; }
+        public IReadOnlyList<ResourceUsageData> LastClaimedResources { get; private set; }
 
         private ResourceRewardData _rewardData;
 
@@ -16,11 +19,13 @@ namespace ResourceSystem
             return _rewardData.ResourceData is IItemType;
         }
 
-        public void Claim()
+        public List<ResourceUsageData> Claim()
         {
-            if (Claimed)
+            List<ResourceUsageData> result = new();
+
+            if (AlreadyClaimed)
             {
-                return;
+                return result;
             }
 
             int id = _rewardData.ResourceData.Id;
@@ -32,24 +37,29 @@ namespace ResourceSystem
                 {
                     OwnedItem ownedItem = new OwnedItem(_rewardData.ResourceData);
                     ResourceManager.Instance.AddOwnedItem(ownedItem);
+                    result.Add(new ResourceUsageData(ownedItem.Data, 1));
                 }
             }
             else
             {
-                ResourceManager.Instance.GetOwnedCurrency(id).Amount += amount;
+                OwnedCurrency ownedCurrency = ResourceManager.Instance.GetOwnedCurrency(id);
+                ownedCurrency.Amount += amount;
+                result.Add(new ResourceUsageData(ownedCurrency.Data, amount));
             }
 
-            Claimed = true;
+            AlreadyClaimed = true;
+            LastClaimedResources = result;
+            return result;
         }
 
         public void Renew()
         {
-            Claimed = false;
+            AlreadyClaimed = false;
         }
 
         public void MarkClaimed()
         {
-            Claimed = true;
+            AlreadyClaimed = true;
         }
 
         public void View(ResourceView view)

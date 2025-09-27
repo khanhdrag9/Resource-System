@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,8 +10,8 @@ namespace ResourceSystem
 
         [Header("Event")]
         [SerializeField] private UnityEvent<bool> _onClaimableStateChangedEvent;
-        [SerializeField] private UnityEvent<ResourceRewardData> _onClaimed;
-        [SerializeField] private UnityEvent<ResourceRewardData> _onAlreadyClaimed;
+        [SerializeField] private UnityEvent<List<ResourceUsageData>> _onClaimed;
+        [SerializeField] private UnityEvent _onAlreadyClaimed;
 
         private ResourceRewardData _rewardData;
         private RewardDataHandler _rewardDataHandler;
@@ -47,7 +48,7 @@ namespace ResourceSystem
 
             _rewardData = new ResourceRewardData(data, amount);
             _rewardDataHandler = new RewardDataHandler(_rewardData);
-            _onClaimableStateChangedEvent.Invoke(!_rewardDataHandler.Claimed);
+            _onClaimableStateChangedEvent.Invoke(!_rewardDataHandler.AlreadyClaimed);
         }
 
         public void TryClaim()
@@ -58,15 +59,17 @@ namespace ResourceSystem
                 return;
             }
 
-            if (_rewardDataHandler.Claimed)
+            if (_rewardDataHandler.AlreadyClaimed)
             {
-                _onAlreadyClaimed.Invoke(_rewardData);
+                _onAlreadyClaimed.Invoke();
                 return;
             }
 
-            _rewardDataHandler.Claim();
-            _onClaimableStateChangedEvent.Invoke(!_rewardDataHandler.Claimed);
-            _onClaimed.Invoke(_rewardData);
+            List<RewardDataHandler> rewardHandlers = new List<RewardDataHandler> { _rewardDataHandler };
+            List<ResourceUsageData> claimedResources = rewardHandlers.Claim();
+
+            _onClaimableStateChangedEvent.Invoke(!_rewardDataHandler.AlreadyClaimed);
+            _onClaimed.Invoke(claimedResources);
         }
 
         public void MarkAsClaimed()
@@ -77,7 +80,7 @@ namespace ResourceSystem
                 return;
             }
 
-            if (_rewardDataHandler.Claimed)
+            if (_rewardDataHandler.AlreadyClaimed)
             {
                 return;
             }
@@ -94,7 +97,7 @@ namespace ResourceSystem
                 return;
             }
 
-            if (!_rewardDataHandler.Claimed)
+            if (!_rewardDataHandler.AlreadyClaimed)
             {
                 return;
             }
