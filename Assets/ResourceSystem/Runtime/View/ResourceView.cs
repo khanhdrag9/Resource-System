@@ -8,26 +8,28 @@ namespace ResourceSystem
     public class ResourceView : MonoBehaviour
     {
         [Header("Default")]
-        public int DefaultResourceId;
-        [SerializeField] protected int _defaultAmount;
-        [SerializeField] protected bool _includeOwned;
+        [SerializeField] private int _defaultResourceId;
+        [SerializeField] private int _defaultAmount;
+        [SerializeField] private bool _includeOwned;
 
         [Header("UI")]
-        [SerializeField] protected Image _rarityImage;
-        [SerializeField] protected Image _iconImage;
-        [SerializeField] protected TextMeshProUGUI _nameText;
-        [SerializeField] protected TextMeshProUGUI _descriptionText;
-        [SerializeField] protected TextMeshProUGUI _amountText;
-        [SerializeField] protected string _amountTextFormat = "x{0}";
-        [SerializeField][Tooltip("0: OwnedResource.Amount, 1: Amount")] protected string _amountTextWithOwnedFormat = "{0}/{1}";
+        [SerializeField] private Image _rarityImage;
+        [SerializeField] private Image _iconImage;
+        [SerializeField] private TextMeshProUGUI _nameText;
+        [SerializeField] private TextMeshProUGUI _descriptionText;
+        [SerializeField] private TextMeshProUGUI _amountText;
+        [SerializeField] private string _amountTextFormat = "x{0}";
+        [SerializeField] private TextMeshProUGUI _ownedAmountText;
+        [SerializeField] private string _ownedAmountTextFormat = "Owned: {0}";
 
         [Header("Rarity")]
-        [SerializeField] protected RarityConfig _rarityConfig;
-        [SerializeField] protected string _rarityConfigPath = "ResourceSystem/RarityConfig";
+        [SerializeField] private RarityConfig _rarityConfig;
+        [SerializeField] private string _rarityConfigPath = "ResourceSystem/RarityConfig";
 
         [Header("Event")]
-        [SerializeField] protected UnityEvent<int> _onOwnedAmountChangedEvent;
+        [SerializeField] private UnityEvent<int> _onOwnedAmountChangedEvent;
 
+        public ResourceManager ResourceManager => ResourceManager.Instance;
         public ResourceData Data { get; private set; }
         public OwnedCurrency OwnedResource { get; private set; }
         public int Amount { get; private set; }
@@ -35,42 +37,31 @@ namespace ResourceSystem
 
         private void Start()
         {
-            if (Data == null)
-            {
-                if (_includeOwned)
-                {
-                    UpdateInfo(ResourceManager.Instance.GetOwnedResource(DefaultResourceId), _defaultAmount);
-                }
-                else
-                {
-                    UpdateInfo(DefaultResourceId, _defaultAmount);
-                }
-            }
+            LoadDefault();
         }
 
-        public void UpdateInfo(int id, int amount)
+        private void OnDestroy()
         {
-            UpdateInfo(ResourceManager.Instance.GetResourceData(id), amount);
+            RemoveOwnedResourceListener();
         }
 
-        public void UpdateInfo(OwnedCurrency ownedResource, int amount)
+        private void LoadDefault()
         {
-            if (OwnedResource != null)
-            {
-                OwnedResource.OnAmountChanged -= OnOwnedAmountChanged;
-            }
+            if (Data != null) return;
 
-            OwnedResource = ownedResource;
-            if (ownedResource == null)
+            if (_includeOwned)
             {
-                return;
+                OwnedCurrency ownedResource = ResourceManager.GetOwnedResource(_defaultResourceId);
+                UpdateInfo(ownedResource.Data, _defaultAmount, ownedResource);
             }
-
-            ownedResource.OnAmountChanged += OnOwnedAmountChanged;
-            UpdateInfo(ownedResource.Data, amount);
+            else
+            {
+                ResourceData resourceData = ResourceManager.GetResourceData(_defaultResourceId);
+                UpdateInfo(resourceData, _defaultAmount);
+            }
         }
 
-        public void UpdateInfo(ResourceData data, int amount)
+        public void UpdateInfo(ResourceData data, int amount, OwnedCurrency ownedResource = null)
         {
             if (data == null)
             {
@@ -80,90 +71,87 @@ namespace ResourceSystem
 
             Data = data;
             Amount = amount;
+
+            RemoveOwnedResourceListener();
+            NewOwnedResourceListener(ownedResource);
             UpdateUI();
         }
 
-        public virtual void UpdateUI()
+        private void NewOwnedResourceListener(OwnedCurrency newOwnedResource)
         {
-            if (_rarityImage)
-            {
-                _rarityImage.sprite = GetRaritySprite();
-            }
+            OwnedResource = newOwnedResource;
 
-            if (_iconImage)
+            if (OwnedResource != null)
             {
-                _iconImage.sprite = GetResourceIcon();
-            }
-
-            if (_nameText)
-            {
-                _nameText.text = GetNameText();
-            }
-
-            if (_descriptionText)
-            {
-                _descriptionText.text = GetDescriptionText();
-            }
-
-            if (_amountText)
-            {
-                _amountText.text = GetAmountText();
+                OwnedResource.OnAmountChanged += OnOwnedAmountChanged;
             }
         }
 
-        protected virtual Sprite GetRaritySprite()
+        private void RemoveOwnedResourceListener()
         {
+            if (OwnedResource != null)
+            {
+                OwnedResource.OnAmountChanged -= OnOwnedAmountChanged;
+                OwnedResource = null;
+            }
+        }
+
+        private void OnOwnedAmountChanged(int amount)
+        {
+            UpdateAmountText();
+            _onOwnedAmountChangedEvent?.Invoke(amount);
+        }
+
+        public void UpdateUI()
+        {
+            if (_iconImage && Data is IHasIcon hasIcon)
+            {
+                _iconImage.sprite = hasIcon.Icon;
+            }
+
+            if (_nameText && Data is IHasName hasName)
+            {
+                _nameText.text = hasName.Name;
+                _descriptionText.text = hasName.Description;
+            }
+
+            UpdateRarityUI();
+            UpdateAmountText();
+        }
+
+        private void UpdateRarityUI()
+        {
+            if (_rarityImage == null)
+            {
+                return;
+            }
+
             if (_rarityConfig == null)
             {
                 _rarityConfig = Resources.Load<RarityConfig>(_rarityConfigPath);
 
                 if (_rarityConfig == null)
                 {
-                    return null;
+                    return;
                 }
             }
 
-            return _rarityConfig.Get(Data is IHasRarity hasRarity ? hasRarity.Rarity : 0).UI;
+            _rarityImage.sprite = _rarityConfig.Get(Data is IHasRarity hasRarity ? hasRarity.Rarity : 0).UI;
         }
 
-        protected virtual Sprite GetResourceIcon()
+        private void UpdateAmountText()
         {
-            return Data is IHasIcon hasIcon ? hasIcon.Icon : null;
-        }
-
-        protected virtual string GetNameText()
-        {
-            return Data is IHasName hasName ? hasName.Name : "";
-        }
-
-        protected virtual string GetDescriptionText()
-        {
-            return Data is IHasName hasName ? hasName.Description : "";
-        }
-
-        protected virtual string GetAmountText()
-        {
-            if (Amount <= 1)
+            if (_amountText != null)
             {
-                return "";
+                _amountText.text = string.Format(_amountTextFormat, Amount.ToString());
             }
 
-            if (OwnedResource != null)
+            if (OwnedResource != null && _ownedAmountText != null)
             {
-                return string.Format(_amountTextWithOwnedFormat, OwnedResource.Amount.ToString(), Amount.ToString());
+                _ownedAmountText.text = string.Format(_ownedAmountTextFormat, OwnedResource.Amount.ToString());
             }
-
-            return string.Format(_amountTextFormat, Amount.ToString());
         }
 
-        private void OnOwnedAmountChanged(int amount)
-        {
-            if (_amountText)
-            {
-                _amountText.text = GetAmountText();
-            }
 
-            _onOwnedAmountChangedEvent?.Invoke(amount);
-        }
     }
 }
