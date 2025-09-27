@@ -30,11 +30,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1025943892555558819}
   - {fileID: 7321933642232627590}
   - {fileID: 3093658705377929676}
-  - {fileID: 1061074937053749670}
   - {fileID: 7916309185768154564}
-  - {fileID: 1025943892555558819}
+  - {fileID: 1061074937053749670}
   m_Father: {fileID: 7094452484298879966}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -359,6 +359,7 @@ GameObject:
   - component: {fileID: 7094452484298879966}
   - component: {fileID: 3543410375677533631}
   - component: {fileID: 4140021531273592854}
+  - component: {fileID: 432411948165496655}
   - component: {fileID: 1610588651254908976}
   m_Layer: 5
   m_Name: Resource Info Popup
@@ -418,17 +419,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultResourceId: 0
   _defaultAmount: 0
-  _includeOwned: 0
   _rarityImage: {fileID: 228491404706809865}
   _iconImage: {fileID: 8439719709425102789}
   _nameText: {fileID: 1948159405151300734}
   _descriptionText: {fileID: 4939918756286814843}
-  _amountText: {fileID: 6521966222889521886}
+  _amountText: {fileID: 812323571020482066}
   _amountTextFormat: x{0}
-  _ownedAmountText: {fileID: 6521966222889521886}
-  _ownedAmountTextFormat: 'Owned: {0}'
   _rarityConfig: {fileID: 0}
   _rarityConfigPath: ResourceSystem/RarityConfig
+  _onDataChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &432411948165496655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5140736554122203228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d3c57ec837fcde4486148d5323c8184, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ownedAmountText: {fileID: 6521966222889521886}
+  _ownedAmountTextFormat: 'Owned: {0}'
   _onOwnedAmountChangedEvent:
     m_PersistentCalls:
       m_Calls: []

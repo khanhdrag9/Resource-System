@@ -10,7 +10,6 @@ namespace ResourceSystem
         [Header("Default")]
         [SerializeField] private int _defaultResourceId;
         [SerializeField] private int _defaultAmount;
-        [SerializeField] private bool _includeOwned;
 
         [Header("UI")]
         [SerializeField] private Image _rarityImage;
@@ -19,49 +18,34 @@ namespace ResourceSystem
         [SerializeField] private TextMeshProUGUI _descriptionText;
         [SerializeField] private TextMeshProUGUI _amountText;
         [SerializeField] private string _amountTextFormat = "x{0}";
-        [SerializeField] private TextMeshProUGUI _ownedAmountText;
-        [SerializeField] private string _ownedAmountTextFormat = "Owned: {0}";
 
         [Header("Rarity")]
         [SerializeField] private RarityConfig _rarityConfig;
         [SerializeField] private string _rarityConfigPath = "ResourceSystem/RarityConfig";
 
         [Header("Event")]
-        [SerializeField] private UnityEvent<int> _onOwnedAmountChangedEvent;
+        [SerializeField] private UnityEvent<ResourceData, int> _onDataChangedEvent;
 
         public ResourceManager ResourceManager => ResourceManager.Instance;
         public ResourceData Data { get; private set; }
-        public OwnedCurrency OwnedResource { get; private set; }
         public int Amount { get; private set; }
-        public UnityEvent<int> OnOwnedAmountChangedEvent => _onOwnedAmountChangedEvent;
+        public UnityEvent<ResourceData, int> OnDataChangedEvent => _onDataChangedEvent;
 
         private void Start()
         {
             LoadDefault();
         }
 
-        private void OnDestroy()
-        {
-            RemoveOwnedResourceListener();
-        }
-
         private void LoadDefault()
         {
             if (Data != null) return;
+            if (_defaultResourceId == 0) return;
 
-            if (_includeOwned)
-            {
-                OwnedCurrency ownedResource = ResourceManager.GetOwnedCurrency(_defaultResourceId);
-                UpdateInfo(ownedResource.Data, _defaultAmount, ownedResource);
-            }
-            else
-            {
-                ResourceData resourceData = ResourceManager.GetResourceData(_defaultResourceId);
-                UpdateInfo(resourceData, _defaultAmount);
-            }
+            ResourceData resourceData = ResourceManager.GetResourceData(_defaultResourceId);
+            UpdateInfo(resourceData, _defaultAmount);
         }
 
-        public void UpdateInfo(ResourceData data, int amount, OwnedCurrency ownedResource = null)
+        public void UpdateInfo(ResourceData data, int amount)
         {
             if (data == null)
             {
@@ -71,39 +55,14 @@ namespace ResourceSystem
 
             Data = data;
             Amount = amount;
-
-            RemoveOwnedResourceListener();
-            NewOwnedResourceListener(ownedResource);
             UpdateUI();
-        }
-
-        private void NewOwnedResourceListener(OwnedCurrency newOwnedResource)
-        {
-            OwnedResource = newOwnedResource;
-
-            if (OwnedResource != null)
-            {
-                OwnedResource.OnAmountChanged += OnOwnedAmountChanged;
-            }
-        }
-
-        private void RemoveOwnedResourceListener()
-        {
-            if (OwnedResource != null)
-            {
-                OwnedResource.OnAmountChanged -= OnOwnedAmountChanged;
-                OwnedResource = null;
-            }
-        }
-
-        private void OnOwnedAmountChanged(int amount)
-        {
-            UpdateAmountText();
-            _onOwnedAmountChangedEvent?.Invoke(amount);
+            _onDataChangedEvent.Invoke(Data, Amount);
         }
 
         public void UpdateUI()
         {
+            UpdateRarityUI();
+
             if (_iconImage)
             {
                 _iconImage.sprite = Data is IHasIcon hasIcon ? hasIcon.Icon : null;
@@ -123,8 +82,10 @@ namespace ResourceSystem
                 }
             }
 
-            UpdateRarityUI();
-            UpdateAmountText();
+            if (_amountText != null)
+            {
+                _amountText.text = string.Format(_amountTextFormat, Amount.ToString());
+            }
         }
 
         private void UpdateRarityUI()
@@ -145,26 +106,6 @@ namespace ResourceSystem
             }
 
             _rarityImage.sprite = _rarityConfig.Get(Data is IHasRarity hasRarity ? hasRarity.Rarity : 0).UI;
-        }
-
-        private void UpdateAmountText()
-        {
-            if (_amountText != null)
-            {
-                _amountText.text = string.Format(_amountTextFormat, Amount.ToString());
-            }
-
-            if (_ownedAmountText != null)
-            {
-                if (OwnedResource == null)
-                {
-                    _ownedAmountText.text = "";
-                }
-                else
-                {
-                    _ownedAmountText.text = string.Format(_ownedAmountTextFormat, OwnedResource.Amount.ToString());
-                }
-            }
         }
     }
 }

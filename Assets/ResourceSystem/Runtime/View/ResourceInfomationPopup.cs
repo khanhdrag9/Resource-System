@@ -32,7 +32,7 @@ namespace ResourceSystem
         public void UpdateInfo(Transform anchor, ResourceData data, int amount, OwnedCurrency ownedResource = null)
         {
             _anchorTransform = anchor;
-            _resourceView.UpdateInfo(data, amount, ownedResource);
+            _resourceView.UpdateInfo(data, amount);
         }
     }
 }

@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 6518307520540071992}
   - component: {fileID: 7649215170983913354}
   - component: {fileID: 4788984034356113013}
+  - component: {fileID: 4704867064790338000}
   - component: {fileID: 8891206984202709877}
   - component: {fileID: 1214747516886815110}
   - component: {fileID: 6888661974186442068}
@@ -276,18 +277,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultResourceId: 1
   _defaultAmount: 0
-  _includeOwned: 1
   _rarityImage: {fileID: 1214747516886815110}
   _iconImage: {fileID: 6657659393965050017}
   _nameText: {fileID: 0}
   _descriptionText: {fileID: 0}
   _amountText: {fileID: 1015256406570192602}
   _amountTextFormat: x{0}
-  _ownedAmountText: {fileID: 0}
-  _ownedAmountTextFormat: 'Owned: {0}'
   _rarityConfig: {fileID: 0}
   _rarityConfigPath: ResourceSystem/RarityConfig
-  _onOwnedAmountChangedEvent:
+  _onDataChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4704867064790338000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557887820735620233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6660805808264574abaa9a187467c1a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _claimButton: {fileID: 5927140730503959514}
+  _onClaimableStateChangedEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4396651464038030741}
+        m_TargetAssemblyTypeName: TwoStateButton, Assembly-CSharp
+        m_MethodName: SetState
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onClaimed:
+    m_PersistentCalls:
+      m_Calls: []
+  _onAlreadyClaimed:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &8891206984202709877
@@ -389,6 +421,7 @@ GameObject:
   - component: {fileID: 2971501366506857183}
   - component: {fileID: 8756390025028335910}
   - component: {fileID: 5927140730503959514}
+  - component: {fileID: 4396651464038030741}
   m_Layer: 5
   m_Name: Claim button
   m_TagString: Untagged
@@ -498,6 +531,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4396651464038030741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8551698108306734307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb795e13c923898449fe308f3b3750b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _normalText: Claim
+  _negativeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _negativeText: Claimed
 --- !u!1 &8699350680826442367
 GameObject:
   m_ObjectHideFlags: 0

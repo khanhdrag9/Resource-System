@@ -67,15 +67,7 @@ namespace ResourceSystem
 
         public void View(ResourceView view)
         {
-            if (IsItemType())
-            {
-                view.UpdateInfo(_costData.ResourceData, _costData.Amount);
-            }
-            else
-            {
-                OwnedCurrency ownedResource = ResourceManager.Instance.GetOwnedCurrency(_costData.ResourceData.Id);
-                view.UpdateInfo(ownedResource.Data, _costData.Amount, ownedResource);
-            }
+            view.UpdateInfo(_costData.ResourceData, _costData.Amount);
         }
     }
 }

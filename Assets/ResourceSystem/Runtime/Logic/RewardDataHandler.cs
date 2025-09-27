@@ -28,7 +28,7 @@ namespace ResourceSystem
 
             if (IsItemType())
             {
-                for(int i = 0; i < amount; i++)
+                for (int i = 0; i < amount; i++)
                 {
                     OwnedItem ownedItem = new OwnedItem(_rewardData.ResourceData);
                     ResourceManager.Instance.AddOwnedItem(ownedItem);
@@ -45,6 +45,11 @@ namespace ResourceSystem
         public void Renew()
         {
             Claimed = false;
+        }
+
+        public void MarkClaimed()
+        {
+            Claimed = true;
         }
 
         public void View(ResourceView view)

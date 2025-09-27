@@ -23,15 +23,27 @@ public class ResourceSystemExample : MonoBehaviour
     [Serializable]
     public class RewardData
     {
+        [Tooltip("Resource ID, cannot change in play mode")]
         public int Id;
         public int Amount;
+        public GameObject View;
     }
 
     public TextMeshProUGUI ResourceNameText;
     public List<ExampleData> DataList = new List<ExampleData>();
+
+    [Header("Reward")]
     public List<RewardData> Rewards = new List<RewardData>();
-    public List<ResourceView> RewardViews = new List<ResourceView>();
-    public List<Button> RewardButtons = new List<Button>();
+
+    [Header("Shop")]
+    public List<RewardData> ShopRewards = new List<RewardData>();
+    public List<RewardData> ShopCost = new List<RewardData>();
+    public List<ResourceView> ShopRewardViews = new List<ResourceView>();
+    public List<Button> ShopButtons = new List<Button>();
+    
+    private List<ResourceRewardData> _allShopRewardDatas = new List<ResourceRewardData>();
+    private List<ResourceCostData> _allShopCostDatas = new List<ResourceCostData>();
+    private List<CostDataHandler> _allCostDataHandlers = new List<CostDataHandler>();
 
     [Header("UI")]
     public Button _addButton;
@@ -39,7 +51,6 @@ public class ResourceSystemExample : MonoBehaviour
     public TMP_InputField _idInput;
     public TMP_InputField _amountInput;
 
-    private List<RewardDataHandler> _allRewardDataHandlers = new List<RewardDataHandler>();
 
     void Start()
     {
@@ -59,45 +70,54 @@ public class ResourceSystemExample : MonoBehaviour
             ReceiveResource(data.Id, data.Amount);
         }
 
-        for (int i = 0; i < RewardButtons.Count; i++)
+        for (int i = 0; i < Rewards.Count; i++)
         {
-            Button button = RewardButtons[i];
-            if (i >= Rewards.Count)
+            RewardData reward = Rewards[i];
+            reward.View.GetComponent<ResourceView>().UpdateInfo(ResourceManager.Instance.GetResourceData(reward.Id), reward.Amount);
+        }
+
+        for (int i = 0; i < ShopButtons.Count; i++)
+        {
+            Button button = ShopButtons[i];
+            if (i >= ShopRewards.Count || i >= ShopCost.Count)
             {
                 button.gameObject.SetActive(false);
                 continue;
             }
 
-            RewardData reward = Rewards[i];
-            ResourceData resourceData = ResourceManager.Instance.GetResourceData(reward.Id);
-            ResourceRewardData rewardData = new ResourceRewardData(resourceData, reward.Amount);
+            RewardData reward = ShopRewards[i];
+            RewardData cost = ShopCost[i];
+            ResourceData rewardResourceData = ResourceManager.Instance.GetResourceData(reward.Id);
+            ResourceData costResourceData = ResourceManager.Instance.GetResourceData(cost.Id);
+
+            ResourceRewardData rewardData = new ResourceRewardData(rewardResourceData, reward.Amount);
+            ResourceCostData costData = new ResourceCostData(costResourceData, cost.Amount);
+
+            CostDataHandler costDataHandler = new CostDataHandler(costData);
             RewardDataHandler rewardDataHandler = new RewardDataHandler(rewardData);
-            _allRewardDataHandlers.Add(rewardDataHandler);
+
+            _allShopRewardDatas.Add(rewardData);
+            _allShopCostDatas.Add(costData);
+            _allCostDataHandlers.Add(costDataHandler);
 
             button.onClick.AddListener(() =>
             {
-                if (!rewardDataHandler.Claimed)
+                if (costDataHandler.Enough() && !rewardDataHandler.Claimed)
                 {
+                    costDataHandler.Cost();
                     rewardDataHandler.Claim();
-                    button.GetComponentInChildren<TextMeshProUGUI>().text = "Claimed";
-                    button.image.color = Color.gray;
+                    rewardDataHandler.Renew();
                 }
             });
         }
 
         _addButton.onClick.AddListener(OnAddButtonClicked);
-        _resetAllRewardClaimButton.onClick.AddListener(resetAllRewardClaim);
+        _resetAllRewardClaimButton.onClick.AddListener(ResetAllRewardClaim);
     }
 
     void Update()
     {
-        for (int i = 0; i < Rewards.Count; i++)
-        {
-            RewardViews[i].UpdateInfo(
-                ResourceManager.Instance.GetResourceData(Rewards[i].Id),
-                Rewards[i].Amount
-            );
-        }
+        // UpdateShopUi();
 
         if (!string.IsNullOrEmpty(_idInput.text) && int.TryParse(_idInput.text, out int id))
         {
@@ -114,6 +134,30 @@ public class ResourceSystemExample : MonoBehaviour
         else
         {
             ResourceNameText.text = "";
+        }
+    }
+
+
+    private void UpdateShopUi()
+    {
+        for (int i = 0; i < ShopRewards.Count; i++)
+        {
+            ShopRewardViews[i].UpdateInfo(
+                ResourceManager.Instance.GetResourceData(ShopRewards[i].Id),
+                ShopRewards[i].Amount
+            );
+
+            _allShopRewardDatas[i].Amount = ShopRewards[i].Amount;
+            _allShopCostDatas[i].Amount = ShopCost[i].Amount;
+
+            Button button = ShopButtons[i];
+            CostDataHandler costDataHandler = _allCostDataHandlers[i];
+            button.image.color = costDataHandler.Enough() ? Color.yellow : Color.gray;
+
+            button.GetComponent<ResourceView>().UpdateInfo(
+                ResourceManager.Instance.GetResourceData(ShopCost[i].Id),
+                ShopCost[i].Amount
+            );
         }
     }
 
@@ -164,18 +208,11 @@ public class ResourceSystemExample : MonoBehaviour
         }
     }
 
-    public void resetAllRewardClaim()
+    public void ResetAllRewardClaim()
     {
-        foreach (var rewardDataHandler in _allRewardDataHandlers)
+        foreach (var data in Rewards)
         {
-            rewardDataHandler.Renew();
-        }
-
-        for (int i = 0; i < Mathf.Min(RewardButtons.Count, Rewards.Count); i++)
-        {
-            Button button = RewardButtons[i];
-            button.GetComponentInChildren<TextMeshProUGUI>().text = "Claim";
-            button.image.color = Color.yellow;
+            data.View.GetComponent<ClaimRewardView>().Renew();
         }
     }
 }
