@@ -11,17 +11,19 @@ namespace ResourceSystem
             get => _amount;
             set
             {
-                if(_amount == value)
+                if (_amount == value)
                 {
                     return;
                 }
-
+                
                 _amount = value;
                 OnAmountChanged?.Invoke(value);
+                OnAmountChangedWithDataNAmountChanged?.Invoke(Data, value);
             }
         }
 
         public Action<int> OnAmountChanged = delegate { };
+        public Action<ResourceData, int> OnAmountChangedWithDataNAmountChanged = delegate { };
 
         private int _amount;
 

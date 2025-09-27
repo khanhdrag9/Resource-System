@@ -2694,6 +2694,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3535100352611184818, guid: 41992ecbbe8f42a4cb0284707cfc2dbc, type: 3}
+      propertyPath: AnimationSequence.Array.data[0].AtTime
+      value: 'At 0s [Shop Item (1)] [RectTransform]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 3535100352611184818, guid: 41992ecbbe8f42a4cb0284707cfc2dbc, type: 3}
+      propertyPath: AnimationSequence.Array.data[0].PropertyRectY
+      value: 130
+      objectReference: {fileID: 0}
     - target: {fileID: 7160484766505987177, guid: 41992ecbbe8f42a4cb0284707cfc2dbc, type: 3}
       propertyPath: m_Name
       value: Shop Item (1)
@@ -3771,6 +3779,10 @@ PrefabInstance:
     - target: {fileID: 3112332645402175647, guid: 41992ecbbe8f42a4cb0284707cfc2dbc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3535100352611184818, guid: 41992ecbbe8f42a4cb0284707cfc2dbc, type: 3}
+      propertyPath: AnimationSequence.Array.data[0].PropertyRectY
+      value: 130
       objectReference: {fileID: 0}
     - target: {fileID: 7160484766505987177, guid: 41992ecbbe8f42a4cb0284707cfc2dbc, type: 3}
       propertyPath: m_Name

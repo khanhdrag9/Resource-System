@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,7 +6,11 @@ namespace ResourceSystem
 {
     public class ResourceManager
     {
+        public static ResourceData EmptyResourceData => new ResourceData(0);
+        
         public static ResourceManager Instance { get; private set; } = new();
+
+        public Action<ResourceData, int> OnResourceChanged = delegate { };   // ID - Changed Value
 
         private Dictionary<int, ResourceData> _resourceDataMap = new();
         private Dictionary<int, OwnedCurrency> _ownedCurrencyMap = new();
@@ -25,6 +30,7 @@ namespace ResourceSystem
         public void AddOwnedItem(OwnedItem ownedItem)
         {
             _ownedItems.Add(ownedItem);
+            OnResourceChanged?.Invoke(ownedItem.Data, 1);
         }
 
         public ResourceData GetResourceData(int id)
@@ -37,7 +43,7 @@ namespace ResourceSystem
 
             return resourceData;
         }
-        
+
         public OwnedCurrency GetOwnedCurrency(int id)
         {
             if (!_ownedCurrencyMap.TryGetValue(id, out var ownedCurrency))
@@ -46,9 +52,11 @@ namespace ResourceSystem
                 if (resourceData == null)
                 {
                     Debug.LogWarning($"ResourceSystem: Owned resource with id {id} not found");
+                    return null;
                 }
 
                 ownedCurrency = new OwnedCurrency(resourceData);
+                ownedCurrency.OnAmountChangedWithDataNAmountChanged += OnCurrencyChanged;
                 _ownedCurrencyMap.Add(id, ownedCurrency);
                 return ownedCurrency;
             }
@@ -66,12 +74,12 @@ namespace ResourceSystem
             List<OwnedItem> result = new();
             foreach (OwnedItem item in _ownedItems)
             {
-                if(item.Data.Id == id)
+                if (item.Data.Id == id)
                 {
                     result.Add(item);
                 }
 
-                if(amount > 0 && result.Count >= amount)
+                if (amount > 0 && result.Count >= amount)
                 {
                     break;
                 }
@@ -81,14 +89,27 @@ namespace ResourceSystem
 
         public void RemoveOwnedItem(OwnedItem ownedItem)
         {
-            _ownedItems.Remove(ownedItem);
+            if (_ownedItems.Remove(ownedItem))
+            {
+                OnResourceChanged?.Invoke(ownedItem.Data, -1);
+            }
         }
 
         public void Clear()
         {
+            foreach (var ownedCurrency in _ownedCurrencyMap.Values)
+            {
+                ownedCurrency.OnAmountChangedWithDataNAmountChanged -= OnCurrencyChanged;
+            }
+
             _resourceDataMap.Clear();
             _ownedCurrencyMap.Clear();
             _ownedItems.Clear();
+        }
+
+        private void OnCurrencyChanged(ResourceData data, int changedValue)
+        {
+            OnResourceChanged?.Invoke(data, changedValue);
         }
     }
 }

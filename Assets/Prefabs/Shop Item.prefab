@@ -109,7 +109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -11.3, y: 1.2}
+  m_AnchoredPosition: {x: -8.7, y: 1.2}
   m_SizeDelta: {x: 37.5774, y: 28.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7061655454299459451
@@ -167,13 +167,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 21
-  m_fontSizeBase: 21
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -245,7 +245,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -36.2, y: 0.3}
+  m_AnchoredPosition: {x: -38.1, y: 0.3}
   m_SizeDelta: {x: 22.3813, y: 22.3813}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2965308971927106256
@@ -320,7 +320,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 26.470514, y: 1.2}
+  m_AnchoredPosition: {x: 29.070484, y: 1.2}
   m_SizeDelta: {x: 37.5774, y: 28.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7945736373299951341
@@ -360,8 +360,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4281808695
+  m_fontColor: {r: 0.21509439, g: 0.21509439, b: 0.21509439, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -378,8 +378,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 21
-  m_fontSizeBase: 21
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -437,6 +437,7 @@ GameObject:
   - component: {fileID: 6472019393365247065}
   - component: {fileID: 7404368514103576235}
   - component: {fileID: 3305890233763984143}
+  - component: {fileID: 3535100352611184818}
   m_Layer: 5
   m_Name: Shop Item
   m_TagString: Untagged
@@ -516,7 +517,7 @@ MonoBehaviour:
   _onPurchasableStateChangedEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6074926553336056827}
+      - m_Target: {fileID: 9118443363582880869}
         m_TargetAssemblyTypeName: TwoStateButton, Assembly-CSharp
         m_MethodName: SetState
         m_Mode: 0
@@ -534,6 +535,7 @@ MonoBehaviour:
   _onNotEnoughPurchased:
     m_PersistentCalls:
       m_Calls: []
+  _isPurchasable: 0
 --- !u!114 &6472019393365247065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -621,6 +623,102 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3535100352611184818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7160484766505987177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f54930f0f8f7f2478377a55d6c33e4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TotalDuration: 0.5
+  AnimationSequence:
+  - AtTime: 'At 0s [Shop Item] [RectTransform]'
+    StartTime: 0
+    TriggerStart: 0
+    TriggerEnd: 0
+    PropertyRectHeight: 180
+    PropertyRectY: 130
+    SequenceType: 0
+    EaseType: 1
+    EasePower: 3
+    TargetType: 1
+    TargetComp: {fileID: 3112332645402175647}
+    Duration: 0.5
+    EventDynamic:
+      m_PersistentCalls:
+        m_Calls: []
+    IsUnfolded: 1
+    IsDone: 0
+    Target: {fileID: 0}
+    IsActivating: 1
+    PlaySFXBy: 0
+    SFXFile: {fileID: 0}
+    SFXIndex: 0
+    SceneToLoad: 
+    Event:
+      m_PersistentCalls:
+        m_Calls: []
+    TargetRtTask: 1
+    AnchoredPositionState: 1
+    AnchoredPositionStart: {x: 0, y: 0, z: 0}
+    AnchoredPositionEnd: {x: 0, y: 0, z: 0}
+    LocalScaleState: 0
+    LocalScaleStart: {x: 0, y: 0, z: 0}
+    LocalScaleEnd: {x: 0, y: 0, z: 0}
+    LocalEulerAnglesState: 0
+    LocalEulerAnglesStart: {x: 0, y: 0, z: 0}
+    LocalEulerAnglesEnd: {x: 0, y: 0, z: 0}
+    SizeDeltaState: 0
+    SizeDeltaStart: {x: 0, y: 0, z: 0}
+    SizeDeltaEnd: {x: 0, y: 0, z: 0}
+    AnchorMinState: 0
+    AnchorMinStart: {x: 0, y: 0, z: 0}
+    AnchorMinEnd: {x: 0, y: 0, z: 0}
+    AnchorMaxState: 0
+    AnchorMaxStart: {x: 0, y: 0, z: 0}
+    AnchorMaxEnd: {x: 0, y: 0, z: 0}
+    PivotState: 0
+    PivotStart: {x: 0, y: 0, z: 0}
+    PivotEnd: {x: 0, y: 0, z: 0}
+    TransState: 0
+    TargetTransTask: 1
+    LocalPositionState: 0
+    LocalPositionStart: {x: 0, y: 0, z: 0}
+    LocalPositionEnd: {x: 0, y: 0, z: 0}
+    ImgState: 0
+    TargetImgTask: 1
+    ColorState: 0
+    ColorStart: {r: 0, g: 0, b: 0, a: 0}
+    ColorEnd: {r: 0, g: 0, b: 0, a: 0}
+    FillAmountState: 0
+    FillAmountStart: 0
+    FillAmountEnd: 0
+    TargetCgTask: 1
+    AlphaState: 0
+    AlphaStart: 0
+    AlphaEnd: 0
+    TargetCamTask: 1
+    BackgroundColorState: 0
+    BackgroundColorStart: {r: 0, g: 0, b: 0, a: 0}
+    BackgroundColorEnd: {r: 0, g: 0, b: 0, a: 0}
+    OrthographicSizeState: 0
+    OrthographicSizeStart: 0
+    OrthographicSizeEnd: 0
+    TargetTextMeshProTask: 1
+    TextMeshProColorState: 0
+    TextMeshProColorStart: {r: 0, g: 0, b: 0, a: 0}
+    TextMeshProColorEnd: {r: 0, g: 0, b: 0, a: 0}
+    MaxVisibleCharactersState: 0
+    MaxVisibleCharactersStart: 0
+    MaxVisibleCharactersEnd: 0
+  PlayOnStart: 0
+  CurrentTime: 0
+  IsPlayingInEditMode: 0
 --- !u!1 &7395332925459545702
 GameObject:
   m_ObjectHideFlags: 0
@@ -770,7 +868,8 @@ GameObject:
   - component: {fileID: 7784023647704627818}
   - component: {fileID: 7304656220648094849}
   - component: {fileID: 6451582727917289214}
-  - component: {fileID: 6074926553336056827}
+  - component: {fileID: 5750690764283519534}
+  - component: {fileID: 9118443363582880869}
   m_Layer: 5
   m_Name: Claim button
   m_TagString: Untagged
@@ -881,7 +980,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7784023647704627818}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7685428468631733395}
+        m_TargetAssemblyTypeName: ResourceSystem.PurchaseResourceView, ResourceSystem
+        m_MethodName: TryPurchase
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &6451582727917289214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -907,7 +1018,24 @@ MonoBehaviour:
   _onDataChangedEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6074926553336056827
+--- !u!114 &5750690764283519534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8204318556093199226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d3c57ec837fcde4486148d5323c8184, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ownedAmountText: {fileID: 3953072744953233343}
+  _ownedAmountTextFormat: '{0}'
+  _onOwnedAmountChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &9118443363582880869
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -919,7 +1047,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb795e13c923898449fe308f3b3750b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _changeText: 0
   _normalColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  _normalText: Buy
+  _normalText: Claim
   _negativeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  _negativeText: Not Enough
+  _negativeText: Claimed

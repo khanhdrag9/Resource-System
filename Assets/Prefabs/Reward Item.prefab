@@ -530,7 +530,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8756390025028335910}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4704867064790338000}
+        m_TargetAssemblyTypeName: ResourceSystem.ClaimResourceView, ResourceSystem
+        m_MethodName: TryClaim
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &4396651464038030741
 MonoBehaviour:
   m_ObjectHideFlags: 0
