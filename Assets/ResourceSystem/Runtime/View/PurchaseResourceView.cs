@@ -4,7 +4,6 @@ using UnityEngine.Events;
 
 namespace ResourceSystem
 {
-    [RequireComponent(typeof(ResourceView))]
     public class PurchaseResourceView : MonoBehaviour
     {
         [SerializeField] private ResourceView _rewardResourceView;
@@ -156,6 +155,11 @@ namespace ResourceSystem
             if (_costDataHandler == null)
             {
                 Debug.LogWarning("PurchaseResourceView: CostDataHandler is null");
+                return;
+            }
+
+            if(!_isPurchasable)
+            {
                 return;
             }
 
