@@ -1,0 +1,16 @@
+{
+    "name": "com.github.khite.resourcesystem",
+    "displayName": "Resource System",
+    "author": {
+        "name": "Khite",
+        "url": "https://github.com/khanhdrag9"
+    },
+    "keywords": [
+        "resourcesystem",
+        "system"
+    ],
+    "version": "1.0.0",
+    "unity": "2021.3",
+    "description": "Simple resource system for Unity games, allowing players to claim, trade, and manage in-game resources efficiently.",
+    "dependencies": {}
+}

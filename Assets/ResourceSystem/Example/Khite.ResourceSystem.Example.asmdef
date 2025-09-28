@@ -1,7 +1,8 @@
 {
-    "name": "ResourceSystem",
+    "name": "Khite.ResourceSystem.Example",
     "rootNamespace": "",
     "references": [
+        "GUID:95fc93f940bf89645981174f6391e036",
         "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
