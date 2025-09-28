@@ -39,7 +39,7 @@ namespace ResourceSystem
 
             if (amount < 0)
             {
-                List<OwnedItem> ownedItems = GetOwnedItems(resourceData.Id, amount);
+                List<OwnedItem> ownedItems = GetOwnedItems(resourceData.Id, -amount);
                 foreach (var ownedItem in ownedItems)
                 {
                     _ownedItems.Remove(ownedItem);

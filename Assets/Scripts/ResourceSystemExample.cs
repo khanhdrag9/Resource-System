@@ -37,14 +37,6 @@ public class ResourceSystemExample : MonoBehaviour
     public ResourcesListView OwnedItemListView;
 
 
-    [Header("Reward")]
-    public List<RewardData> Rewards = new List<RewardData>();
-
-    [Header("Shop")]
-    public List<RewardData> ShopRewards = new List<RewardData>();
-    public List<RewardData> ShopCost = new List<RewardData>();
-
-
     [Header("UI")]
     public Button _addButton;
     public Button _resetAllRewardClaimButton;
@@ -74,20 +66,6 @@ public class ResourceSystemExample : MonoBehaviour
             }
 
             ReceiveResource(data.Id, data.Amount);
-        }
-
-        for (int i = 0; i < Rewards.Count; i++)
-        {
-            RewardData reward = Rewards[i];
-            reward.View.GetComponent<ResourceView>().UpdateInfo(ResourceManager.Instance.GetResourceData(reward.Id), reward.Amount);
-        }
-
-        for (int i = 0; i < ShopRewards.Count; i++)
-        {
-            RewardData reward = ShopRewards[i];
-            RewardData cost = ShopCost[i];
-            reward.View.GetComponent<ResourceView>().UpdateInfo(ResourceManager.Instance.GetResourceData(reward.Id), reward.Amount);
-            reward.View.transform.Find("Claim button").GetComponent<ResourceView>().UpdateInfo(ResourceManager.Instance.GetResourceData(cost.Id), cost.Amount);
         }
 
         _addButton.onClick.AddListener(OnAddButtonClicked);
@@ -187,9 +165,9 @@ public class ResourceSystemExample : MonoBehaviour
 
     public void ResetAllRewardClaim()
     {
-        foreach (var data in Rewards)
+        foreach (var e in FindObjectsByType<ClaimResourceView>(FindObjectsSortMode.None))
         {
-            data.View.GetComponent<ClaimResourceView>().Renew();
+            e.Renew();
         }
     }
 }
