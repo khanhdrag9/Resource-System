@@ -5,6 +5,7 @@ namespace ResourceSystem
     public class CostDataHandler
     {
         public bool Costed { get; private set; }
+        public OwnedResourceManager OwnedResourceManager => OwnedResourceManager.Instance;
 
         private ResourceCostData _costData;
 
@@ -25,12 +26,12 @@ namespace ResourceSystem
 
             if (IsItemType())
             {
-                List<OwnedItem> ownedItems = ResourceManager.Instance.GetOwnedItems(id);
+                List<OwnedItem> ownedItems = OwnedResourceManager.GetOwnedItems(id);
                 return ownedItems.Count >= amount;
             }
             else
             {
-                return ResourceManager.Instance.GetOwnedCurrency(id).Amount >= amount;
+                return OwnedResourceManager.GetOwnedCurrency(id).Amount >= amount;
             }
         }
 
@@ -46,15 +47,15 @@ namespace ResourceSystem
 
             if (IsItemType())
             {
-                List<OwnedItem> ownedItems = ResourceManager.Instance.GetOwnedItems(id, amount);
+                List<OwnedItem> ownedItems = OwnedResourceManager.GetOwnedItems(id, amount);
                 foreach (OwnedItem ownedItem in ownedItems)
                 {
-                    ResourceManager.Instance.RemoveOwnedItem(ownedItem);
+                    OwnedResourceManager.RemoveOwnedItem(ownedItem);
                 }
             }
             else
             {
-                ResourceManager.Instance.GetOwnedCurrency(id).Amount -= amount;
+                OwnedResourceManager.GetOwnedCurrency(id).Amount -= amount;
             }
 
             Costed = true;

@@ -7,14 +7,10 @@ namespace ResourceSystem
     public class ResourceManager
     {
         public static ResourceData EmptyResourceData => new ResourceData(0);
-        
+
         public static ResourceManager Instance { get; private set; } = new();
 
-        public Action<ResourceData, int> OnResourceChanged = delegate { };   // ID - Changed Value
-
         private Dictionary<int, ResourceData> _resourceDataMap = new();
-        private Dictionary<int, OwnedCurrency> _ownedCurrencyMap = new();
-        private List<OwnedItem> _ownedItems = new();
 
         public void AddResourceData(ResourceData resourceData)
         {
@@ -27,12 +23,6 @@ namespace ResourceSystem
             _resourceDataMap.Add(resourceData.Id, resourceData);
         }
 
-        public void AddOwnedItem(OwnedItem ownedItem)
-        {
-            _ownedItems.Add(ownedItem);
-            OnResourceChanged?.Invoke(ownedItem.Data, 1);
-        }
-
         public ResourceData GetResourceData(int id)
         {
             if (!_resourceDataMap.TryGetValue(id, out var resourceData))
@@ -42,74 +32,6 @@ namespace ResourceSystem
             }
 
             return resourceData;
-        }
-
-        public OwnedCurrency GetOwnedCurrency(int id)
-        {
-            if (!_ownedCurrencyMap.TryGetValue(id, out var ownedCurrency))
-            {
-                ResourceData resourceData = GetResourceData(id);
-                if (resourceData == null)
-                {
-                    Debug.LogWarning($"ResourceSystem: Owned resource with id {id} not found");
-                    return null;
-                }
-
-                ownedCurrency = new OwnedCurrency(resourceData);
-                ownedCurrency.OnAmountChangedWithDataNAmountChanged += OnCurrencyChanged;
-                _ownedCurrencyMap.Add(id, ownedCurrency);
-                return ownedCurrency;
-            }
-
-            return ownedCurrency;
-        }
-
-        public IReadOnlyList<OwnedItem> GetOwnedItems()
-        {
-            return _ownedItems;
-        }
-
-        public List<OwnedItem> GetOwnedItems(int id, int amount = 0)
-        {
-            List<OwnedItem> result = new();
-            foreach (OwnedItem item in _ownedItems)
-            {
-                if (item.Data.Id == id)
-                {
-                    result.Add(item);
-                }
-
-                if (amount > 0 && result.Count >= amount)
-                {
-                    break;
-                }
-            }
-            return result;
-        }
-
-        public void RemoveOwnedItem(OwnedItem ownedItem)
-        {
-            if (_ownedItems.Remove(ownedItem))
-            {
-                OnResourceChanged?.Invoke(ownedItem.Data, -1);
-            }
-        }
-
-        public void Clear()
-        {
-            foreach (var ownedCurrency in _ownedCurrencyMap.Values)
-            {
-                ownedCurrency.OnAmountChangedWithDataNAmountChanged -= OnCurrencyChanged;
-            }
-
-            _resourceDataMap.Clear();
-            _ownedCurrencyMap.Clear();
-            _ownedItems.Clear();
-        }
-
-        private void OnCurrencyChanged(ResourceData data, int changedValue)
-        {
-            OnResourceChanged?.Invoke(data, changedValue);
         }
     }
 }

@@ -6,6 +6,7 @@ namespace ResourceSystem
     {
         public bool AlreadyClaimed { get; private set; }
         public IReadOnlyList<ResourceUsageData> LastClaimedResources { get; private set; }
+        public OwnedResourceManager OwnedResourceManager => OwnedResourceManager.Instance;  
 
         private ResourceRewardData _rewardData;
 
@@ -36,13 +37,13 @@ namespace ResourceSystem
                 for (int i = 0; i < amount; i++)
                 {
                     OwnedItem ownedItem = new OwnedItem(_rewardData.ResourceData);
-                    ResourceManager.Instance.AddOwnedItem(ownedItem);
+                    OwnedResourceManager.AddOwnedItem(ownedItem);
                     result.Add(new ResourceUsageData(ownedItem.Data, 1));
                 }
             }
             else
             {
-                OwnedCurrency ownedCurrency = ResourceManager.Instance.GetOwnedCurrency(id);
+                OwnedCurrency ownedCurrency = OwnedResourceManager.GetOwnedCurrency(id);
                 ownedCurrency.Amount += amount;
                 result.Add(new ResourceUsageData(ownedCurrency.Data, amount));
             }

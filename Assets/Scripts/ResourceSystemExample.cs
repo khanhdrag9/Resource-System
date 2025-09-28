@@ -32,6 +32,11 @@ public class ResourceSystemExample : MonoBehaviour
     public TextMeshProUGUI ResourceNameText;
     public List<ExampleData> DataList = new List<ExampleData>();
 
+    [Header("Owned Item")]
+    public List<RewardData> InitialOwnedItems = new List<RewardData>();
+    public ResourcesListView OwnedItemListView;
+
+
     [Header("Reward")]
     public List<RewardData> Rewards = new List<RewardData>();
 
@@ -45,6 +50,12 @@ public class ResourceSystemExample : MonoBehaviour
     public Button _resetAllRewardClaimButton;
     public TMP_InputField _idInput;
     public TMP_InputField _amountInput;
+
+    private List<ResourceUsageData> _ownedItemCache = new List<ResourceUsageData>();
+    private bool _ownedItemDirty = true;
+
+    public OwnedResourceManager OwnedResourceManager => OwnedResourceManager.Instance;
+    public ResourceManager ResourceManager => ResourceManager.Instance;
 
 
     void Start()
@@ -81,6 +92,44 @@ public class ResourceSystemExample : MonoBehaviour
 
         _addButton.onClick.AddListener(OnAddButtonClicked);
         _resetAllRewardClaimButton.onClick.AddListener(ResetAllRewardClaim);
+
+        foreach (var reward in InitialOwnedItems)
+        {
+            ReceiveResource(reward.Id, reward.Amount);
+        }
+
+        foreach (var ownedItem in OwnedResourceManager.GetAllOwnedItems())
+        {
+            _ownedItemCache.Add(new ResourceUsageData(ownedItem.Data, 1));
+        }
+
+        OwnedResourceManager.OnOwnedResourceChanged += (data, changedValue) =>
+        {
+            if (data is IItemType)
+            {
+                if (changedValue > 0)
+                {
+                    for (int i = 0; i < changedValue; i++)
+                    {
+                        _ownedItemCache.Add(new ResourceUsageData(data, 1));
+                    }
+                }
+                else if(changedValue < 0)
+                {
+                    int removeCount = -changedValue;
+                    for (int i = _ownedItemCache.Count - 1; i >= 0 && removeCount > 0; i--)
+                    {
+                        if (_ownedItemCache[i].ResourceData.Id == data.Id)
+                        {
+                            _ownedItemCache.RemoveAt(i);
+                            removeCount--;
+                        }
+                    }
+                }
+
+                _ownedItemDirty = true;
+            }
+        };
     }
 
     void Update()
@@ -102,6 +151,12 @@ public class ResourceSystemExample : MonoBehaviour
         else
         {
             ResourceNameText.text = "";
+        }
+
+        if(_ownedItemDirty)
+        {
+            _ownedItemDirty = false;
+            OwnedItemListView.UpdateInfo(_ownedItemCache);
         }
     }
 
@@ -127,29 +182,7 @@ public class ResourceSystemExample : MonoBehaviour
     public void ReceiveResource(int id, int amount)
     {
         ResourceData resourceData = ResourceManager.Instance.GetResourceData(id);
-        if (resourceData is IItemType)
-        {
-            if (amount > 0)
-            {
-                for (int i = 0; i < amount; i++)
-                {
-                    OwnedItem ownedItem = new OwnedItem(resourceData);
-                    ResourceManager.Instance.AddOwnedItem(ownedItem);
-                }
-            }
-            else
-            {
-                List<OwnedItem> ownedItems = ResourceManager.Instance.GetOwnedItems(id, -amount);
-                foreach (OwnedItem ownedItem in ownedItems)
-                {
-                    ResourceManager.Instance.RemoveOwnedItem(ownedItem);
-                }
-            }
-        }
-        else
-        {
-            ResourceManager.Instance.GetOwnedCurrency(id).Amount += amount;
-        }
+        OwnedResourceManager.AddOwnedResource(resourceData, amount);
     }
 
     public void ResetAllRewardClaim()

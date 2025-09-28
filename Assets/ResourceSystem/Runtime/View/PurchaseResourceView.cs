@@ -23,7 +23,7 @@ namespace ResourceSystem
         private ResourceCostData _costData;
         private CostDataHandler _costDataHandler;
 
-        public ResourceManager ResourceManager => ResourceManager.Instance;
+        public OwnedResourceManager OwnedResourceManager => OwnedResourceManager.Instance;
         public IResourceListViewProvider ListViewProvider;
 
         public ResourceView RewardResourceView
@@ -92,14 +92,14 @@ namespace ResourceSystem
             RewardResourceView = _rewardResourceView;
             PriceResourceView = _priceResourceView;
 
-            ResourceManager.OnResourceChanged += OnGlobalResourceChanged;
+            OwnedResourceManager.OnOwnedResourceChanged += OnGlobalResourceChanged;
         }
 
         private void OnDestroy()
         {
-            if (ResourceManager != null)
+            if (OwnedResourceManager != null)
             {
-                ResourceManager.OnResourceChanged -= OnGlobalResourceChanged;
+                OwnedResourceManager.OnOwnedResourceChanged -= OnGlobalResourceChanged;
             }
         }
 

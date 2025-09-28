@@ -12,23 +12,32 @@ namespace ResourceSystem
         [SerializeField] private UnityEvent<int> _onOwnedAmountChangedEvent;
 
         private ResourceView _resourceView;
-        private OwnedCurrency _ownedResource;
 
         public UnityEvent<int> OnOwnedAmountChangedEvent => _onOwnedAmountChangedEvent;
         public ResourceView ResourceView => _resourceView;
-        public OwnedCurrency OwnedResource => _ownedResource;
-        public ResourceManager ResourceManager => ResourceManager.Instance;
+        public OwnedResourceManager OwnedResourceManager => OwnedResourceManager.Instance;
 
         private void Start()
         {
             _resourceView = GetComponent<ResourceView>();
             _resourceView.OnDataChangedEvent.AddListener(OnDataChanged);
             OnDataChanged(_resourceView.Data, _resourceView.Amount);
+            OwnedResourceManager.OnOwnedResourceChanged += OnResourceChanged;
         }
 
         private void OnDestroy()
         {
-            RemoveOwnedResourceListener();
+            OwnedResourceManager.OnOwnedResourceChanged -= OnResourceChanged;
+        }
+
+        private void OnResourceChanged(ResourceData data, int newValue)
+        {
+            if (_resourceView.Data == null || data == null || _resourceView.Data.Id != data.Id)
+            {
+                return;
+            }
+
+            UpdateAmountText();
         }
 
         private void OnDataChanged(ResourceData data, int amount)
@@ -39,46 +48,24 @@ namespace ResourceSystem
                 return;
             }
 
-            RemoveOwnedResourceListener();
-            NewOwnedResourceListener(ResourceManager.GetOwnedCurrency(data.Id));
-            UpdateAmountText();
-        }
-
-        private void NewOwnedResourceListener(OwnedCurrency newOwnedResource)
-        {
-            _ownedResource = newOwnedResource;
-
-            if (_ownedResource != null)
-            {
-                _ownedResource.OnAmountChanged += OnOwnedAmountChanged;
-            }
-        }
-
-        private void RemoveOwnedResourceListener()
-        {
-            if (_ownedResource != null)
-            {
-                _ownedResource.OnAmountChanged -= OnOwnedAmountChanged;
-                _ownedResource = null;
-            }
-        }
-
-        private void OnOwnedAmountChanged(int amount)
-        {
             UpdateAmountText();
             _onOwnedAmountChangedEvent?.Invoke(amount);
         }
 
         private void UpdateAmountText()
         {
-            if (_ownedResource != null)
+            int ownedAmount;
+
+            if (_resourceView.Data is IItemType)
             {
-                _ownedAmountText.text = string.Format(_ownedAmountTextFormat, _ownedResource.Amount);
+                ownedAmount = OwnedResourceManager.GetOwnedItems(_resourceView.Data.Id).Count;
             }
             else
             {
-                _ownedAmountText.text = "";
+                ownedAmount = OwnedResourceManager.GetOwnedCurrency(_resourceView.Data.Id).Amount;
             }
+
+            _ownedAmountText.text = string.Format(_ownedAmountTextFormat, ownedAmount);
         }
     }
 }

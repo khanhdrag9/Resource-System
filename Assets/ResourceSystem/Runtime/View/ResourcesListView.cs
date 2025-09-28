@@ -36,7 +36,7 @@ namespace ResourceSystem
             }
 
             ResourceView template = _resourceViewPools[0];
-            ResourceView resourceView = Instantiate(template, template.transform);
+            ResourceView resourceView = Instantiate(template, template.transform.parent);
             _resourceViewPools.Add(resourceView);
 
             return resourceView;

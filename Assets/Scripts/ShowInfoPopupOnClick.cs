@@ -22,7 +22,7 @@ public class ShowInfoPopupOnClick : MonoBehaviour
             instance.transform.SetAsLastSibling();
 
             ResourceData resourceData = resourceView.Data;
-            OwnedCurrency ownedResourceSaveData = ResourceManager.Instance.GetOwnedCurrency(resourceData.Id);
+            OwnedCurrency ownedResourceSaveData = OwnedResourceManager.Instance.GetOwnedCurrency(resourceData.Id);
             instance.GetComponent<ResourceInfomationPopup>().UpdateInfo(
                 transform, resourceView.Data, resourceView.Amount, ownedResourceSaveData
             );
